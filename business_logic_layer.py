@@ -1,5 +1,5 @@
 from os import walk, path
-from data_access_layer import Translator
+from api import requestWordTranslated
 from settings import Settings
 from time import sleep
 from pygame import mixer
@@ -28,9 +28,9 @@ class WordDictsAllBlock:
             self.translated_word = translated_word
 
     def __init__(self):
+        super().__init__()
         self.settings = Settings()
         self.prompt_audios = PromptAudios()
-        self.translator = Translator()
         self.word_dicts = self.audio_dict()
 
     def audio_dict(self) -> dict:
@@ -56,8 +56,11 @@ class WordDictsAllBlock:
                 else:
                     node.Eng_audio = mixer.Sound(path.join(root, word) + "." + suffix)
         for word, node in _word_dict.items():
-            translated = self.translator.make_request(word)
-            node.translated_word = translated
+            response = requestWordTranslated(word)
+            if response:
+                node.translated_word = response
+            else:
+                raise Exception('No response')
 
         return _word_dict
 

@@ -1,1 +1,5 @@
-print([[1], [2], [3]][:-1])
+from settings import Loggable
+
+a = Loggable()
+b = Loggable()
+print(a is b)
